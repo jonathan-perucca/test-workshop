@@ -19,4 +19,4 @@ If user/password is not root/password on your mysql @ localhost, then change the
 You can now run tests into IDE or with mvn test command
 
 
-[DatabaseManager]: com.exemple.integration.DatabaseManager
+[DatabaseManager]: /src/main/java/com/example/integration/DatabaseManager.java#L11-L13
