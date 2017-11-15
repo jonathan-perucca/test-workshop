@@ -2,13 +2,17 @@ package com.example.unitcase.bank;
 
 public class BankAccountService {
 
-    private AuthorizationService authorizationService;
+    private final AuthorizationService authorizationService;
+    private final AccountRepository accountRepository;
 
-    public BankAccountService(AuthorizationService authorizationService) {
+    public BankAccountService(AuthorizationService authorizationService,
+                              AccountRepository accountRepository) {
         this.authorizationService = authorizationService;
+        this.accountRepository = accountRepository;
     }
 
-    public void updateMoney(Account account, int amount) {
+    public void updateMoney(Integer accountId, int amount) {
+        Account account = accountRepository.findById(accountId);
         if (account == null)
             throw new IllegalArgumentException();
 

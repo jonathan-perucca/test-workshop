@@ -12,6 +12,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,6 +25,9 @@ public class BankAccountServiceTest {
 
     @Mock
     AuthorizationService mockAuthorizationService;
+
+    @Mock
+    AccountRepository accountRepository;
 
     @Captor
     ArgumentCaptor<Account> accountCaptor;
@@ -37,8 +42,9 @@ public class BankAccountServiceTest {
         int amount = 30;
         Account account = new Account();
         account.setBalance(10);
+        when( accountRepository.findById(anyInt()) ).thenReturn(account);
 
-        bankAccountService.updateMoney(account, amount);
+        bankAccountService.updateMoney(anyInt(), amount);
 
         assertThat(account.getBalance()).isEqualTo(40);
     }
@@ -48,15 +54,18 @@ public class BankAccountServiceTest {
         int amount = -30;
         Account account = new Account();
         account.setBalance(100);
+        when( accountRepository.findById(anyInt()) ).thenReturn(account);
 
-        bankAccountService.updateMoney(account, amount);
+        bankAccountService.updateMoney(anyInt(), amount);
 
         assertThat(account.getBalance()).isEqualTo(70);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void should_throw_illegalArgumentException_when_account_is_null() {
-        bankAccountService.updateMoney(null, 10);
+        when( accountRepository.findById(anyInt()) ).thenReturn(null);
+
+        bankAccountService.updateMoney(anyInt(), 10);
     }
 
     @Test(expected = CreditNotAuthorizedException.class)
@@ -64,18 +73,18 @@ public class BankAccountServiceTest {
         int amount = -30;
         Account account = new Account();
         account.setBalance(10);
+        when( accountRepository.findById(anyInt()) ).thenReturn(account);
 
-        bankAccountService.updateMoney(account, amount);
+        bankAccountService.updateMoney(anyInt(), amount);
     }
 
     @Test
     public void should_throw_notAuthorizedException_when_account_is_blocked() {
         when( mockAuthorizationService.isAuthorized(any()) ).thenReturn(false);
-
-        Account account = new Account();
+        when( accountRepository.findById(anyInt()) ).thenReturn(mock(Account.class));
 
         try {
-            bankAccountService.updateMoney(account, 10);
+            bankAccountService.updateMoney(anyInt(), 10);
             fail("Should have thrown an exception");
         } catch (NotAuthorizedException ex) {
             verify( mockAuthorizationService ).isAuthorized(any());
