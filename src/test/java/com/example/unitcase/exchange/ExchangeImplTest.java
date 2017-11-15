@@ -1,8 +1,5 @@
 package com.example.unitcase.exchange;
 
-import com.example.unitcase.exchange.Exchange;
-import com.example.unitcase.exchange.ExchangeImpl;
-import com.example.unitcase.exchange.ImpossibleTransitionException;
 import org.junit.Test;
 
 import static com.example.unitcase.exchange.State.*;
